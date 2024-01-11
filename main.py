@@ -1,9 +1,8 @@
+import dotenv
+import gradio as gr
 import io
 import json
 import os
-
-import dotenv
-import gradio as gr
 import requests
 from PIL import Image
 
@@ -23,9 +22,8 @@ def sdxl(text):
         'Authorization': 'Bearer ' + os.getenv('MYSTICAI_API_KEY'),
     }
     data = {
-        "pipeline_id_or_pointer": "Ainzoil/sd-xl:v15",
-        "async_run": False,
-        "input_data": [
+        "pipeline": "pipeline_d30bd76cdd9e400695de24647f35363e",
+        "inputs": [
             {
                 "type": "string",
                 "value": text
@@ -45,9 +43,9 @@ def sdxl(text):
             }
         ]
     }
-    response = requests.post('https://www.mystic.ai/v3/runs', data=json.dumps(data), headers=headers)
+    response = requests.post('https://www.mystic.ai/v4/runs', data=json.dumps(data), headers=headers)
     res = response.json()
-    image_url = res['result']['outputs'][0]['value'][0]['file']['url']
+    image_url = res['outputs'][0]['value'][0]['file']['url']
     response = requests.get(image_url)
     img = Image.open(io.BytesIO(response.content))
     return img
