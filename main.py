@@ -22,7 +22,7 @@ def sdxl(text):
         'Authorization': 'Bearer ' + os.getenv('MYSTICAI_API_KEY'),
     }
     data = {
-        "pipeline": "pipeline_d30bd76cdd9e400695de24647f35363e",
+        "pipeline": "ainzoil/sd-xl:v15",
         "inputs": [
             {
                 "type": "string",
