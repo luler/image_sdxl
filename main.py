@@ -1,19 +1,20 @@
-import dotenv
-import gradio as gr
 import io
 import json
 import os
+
+import dotenv
+import gradio as gr
 import requests
 from PIL import Image
 
 
 def translate(text):
-    response = requests.get('https://lingva.thedaviddelta.com/api/v1/auto/en/' + text)
-    text = ''
-    if response.status_code == 200:
-        data = response.json()
-        text = data['translation']
-    return text
+    with requests.get('https://lingva.thedaviddelta.com/api/v1/auto/en/' + text) as response:
+        text = ''
+        if response.status_code == 200:
+            data = response.json()
+            text = data['translation']
+        return text
 
 
 def sdxl(text):
@@ -43,12 +44,12 @@ def sdxl(text):
             }
         ]
     }
-    response = requests.post('https://www.mystic.ai/v4/runs', data=json.dumps(data), headers=headers)
-    res = response.json()
-    image_url = res['outputs'][0]['value'][0]['file']['url']
-    response = requests.get(image_url)
-    img = Image.open(io.BytesIO(response.content))
-    return img
+    with requests.post('https://www.mystic.ai/v4/runs', data=json.dumps(data), headers=headers) as response:
+        res = response.json()
+        image_url = res['outputs'][0]['value'][0]['file']['url']
+        with requests.get(image_url) as response_image:
+            img = Image.open(io.BytesIO(response_image.content))
+            return img
 
 
 def dosomething(text):
