@@ -5,9 +5,11 @@ import os
 import dotenv
 import gradio as gr
 import requests
+import retrying
 from PIL import Image
 
 
+@retrying.retry(stop_max_attempt_number=5, wait_fixed=1000)
 def translate(text):
     with requests.get('https://lingva.thedaviddelta.com/api/v1/auto/en/' + text) as response:
         text = ''
@@ -17,7 +19,8 @@ def translate(text):
         return text
 
 
-def sdxl(text):
+@retrying.retry(stop_max_attempt_number=10, wait_fixed=1000)
+def get_image_url(text):
     headers = {
         "Content-Type": "application/json",
         'Authorization': 'Bearer ' + os.getenv('MYSTICAI_API_KEY'),
@@ -46,10 +49,14 @@ def sdxl(text):
     }
     with requests.post('https://www.mystic.ai/v4/runs', data=json.dumps(data), headers=headers) as response:
         res = response.json()
-        image_url = res['outputs'][0]['value'][0]['file']['url']
-        with requests.get(image_url) as response_image:
-            img = Image.open(io.BytesIO(response_image.content))
-            return img
+        return res['outputs'][0]['value'][0]['file']['url']
+
+
+def sdxl(text):
+    image_url = get_image_url(text)
+    with requests.get(image_url) as response_image:
+        img = Image.open(io.BytesIO(response_image.content))
+        return img
 
 
 def dosomething(text):
