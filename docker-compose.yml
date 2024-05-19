@@ -12,4 +12,5 @@ services:
     volumes:
       - .:/app
 #    environment:
-#      - MYSTICAI_API_KEY=
+#      - CLOUDFLARE_AI_ACCOUNT_ID=
+#      - CLOUDFLARE_AI_TOKEN=
