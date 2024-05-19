@@ -56,4 +56,4 @@ if __name__ == "__main__":
 
     demo = gr.Interface(dosomething, inputs=[ii, iii], outputs=oo, title='基于Stable Diffusion模型的图片生成')
 
-    demo.launch(server_port=7860)
+    demo.launch(server_name='0.0.0.0', server_port=7860)
