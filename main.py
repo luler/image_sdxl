@@ -7,16 +7,13 @@ import gradio as gr
 import requests
 import retrying
 from PIL import Image
+from googletrans import Translator
 
 
-@retrying.retry(stop_max_attempt_number=3, wait_fixed=1000)
+@retrying.retry(stop_max_attempt_number=2, wait_fixed=1000)
 def translate(text):
-    with requests.get('https://lingva.thedaviddelta.com/api/v1/auto/en/' + text) as response:
-        text = ''
-        if response.status_code == 200:
-            data = response.json()
-            text = data['translation']
-        return text
+    translator = Translator(timeout=10)
+    return translator.translate(text, dest='en').text
 
 
 def get_image_content(text, guidance):
