@@ -9,6 +9,8 @@ import retrying
 from PIL import Image
 from googletrans import Translator
 
+os.environ["no_proxy"] = "localhost,127.0.0.1,::1"
+
 
 @retrying.retry(stop_max_attempt_number=2, wait_fixed=1000)
 def translate(text):
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     iii = gr.Slider(label='文本描述的遵循程度', minimum=1, maximum=20, value=7.5, step=0.1)
     oo = gr.Image(label='生成的图片')
 
-    demo = gr.Interface(dosomething, inputs=[ii, iii], outputs=oo, title='基于Stable Diffusion模型的图片生成')
+    demo = gr.Interface(dosomething, inputs=[ii, iii], outputs=oo, title='基于Stable Diffusion模型的图片生成',
+                        allow_flagging='never', )
 
-    demo.launch(server_name='0.0.0.0', server_port=7860)
+    demo.launch(server_name='0.0.0.0', server_port=7860, share=True)
